@@ -312,3 +312,32 @@ function cleanupInvalidRows() {
   Utils.Log.info('cleanupInvalidRows total', JSON.stringify({ deleted: totalDeleted }));
   return totalDeleted;
 }
+
+Utils.Sheets.savePosts = function(sh, posts) {
+  var idIndex = Utils.Sheets.buildIdIndex(sh); // 假設你 utils 裡有這個 helper
+  var H = Utils.Sheets.index(Utils.Sheets.header(sh));
+  var rows = [];
+
+  posts.forEach(function(post) {
+    var pData = post.data;
+    if (!idIndex.has(String(pData.id))) {
+      var row = new Array(Object.keys(H).length).fill('');
+      row[H['id']] = pData.id;
+      row[H['author']] = pData.author;
+      row[H['created_utc']] = pData.created_utc;
+      row[H['title']] = pData.title;
+      row[H['url']] = pData.url;
+      row[H['score']] = pData.score;
+      row[H['num_comments']] = pData.num_comments;
+      // 根據需要繼續補齊其他欄位...
+      rows.push(row);
+      idIndex.set(String(pData.id), true); // 更新索引避免批次重複
+    }
+  });
+
+  if (rows.length > 0) {
+    sh.getRange(sh.getLastRow() + 1, 1, rows.length, rows[0].length).setValues(rows);
+    // 呼叫原本的排序邏輯 (假設存在於 utils_sheets.gs)
+    Utils.Sheets.sortSheet(sh, H['created_utc']); 
+  }
+};

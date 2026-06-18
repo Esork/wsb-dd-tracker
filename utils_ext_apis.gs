@@ -9,7 +9,7 @@ function httpFetch_(url, opts) {
   var attempt = 0;
   while (++attempt <= maxRetries) {
     try {
-      var res  = (function(){try{var __resp=UrlFetchApp.fetch(url, fetchOpts);return __resp;}catch(e){Utils.Log.append('error','UrlFetch fetch failed',''+e);throw e;}})();
+      var res  = (function(){try{var __resp=UrlFetchApp.fetch(url.includes('reddit.com') ? withProxy_(url) : url, fetchOpts);return __resp;}catch(e){Utils.Log.append('error','UrlFetch fetch failed',''+e);throw e;}})();
       var code = res.getResponseCode();
       if (code >= 200 && code < 300) {
         if (parseAs === 'json')  return JSON.parse(res.getContentText());
@@ -31,7 +31,7 @@ function httpFetch_(url, opts) {
   throw new Error('httpFetch_ failed: ' + url);
 }
 
-function withProxy_(rawUrl) { return 'https://corsproxy.io/?' + encodeURIComponent(rawUrl); }
+function withProxy_(rawUrl) { return 'https://reddit-proxy.kamarski.workers.dev/?url=' + encodeURIComponent(rawUrl); }
 
 function fetchNasdaqListed_() {
   return httpFetch_(Config.SYMBOLS.NASDAQ_LISTED_URL, {
@@ -72,7 +72,7 @@ function fetchRedditSearch_(p) {
       backoffMs:  p.backoffMs  || 800,
       fetchOpts: {
         muteHttpExceptions: true, followRedirects: true,
-        headers: { 'User-Agent': 'Mozilla/5.0 (compatible; GoogleAppsScriptBot/1.0)', 'Accept': 'application/json' }
+        headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', 'Accept': 'application/json' }
       }
     });
   } catch (e) {
@@ -83,7 +83,7 @@ function fetchRedditSearch_(p) {
         backoffMs:  1000,
         fetchOpts: {
           muteHttpExceptions: true, followRedirects: true,
-          headers: { 'User-Agent': 'Mozilla/5.0 (compatible; GoogleAppsScriptBot/1.0)', 'Accept': 'application/json' }
+          headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', 'Accept': 'application/json' }
         }
       });
     }

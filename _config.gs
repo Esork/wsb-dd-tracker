@@ -23,7 +23,8 @@ var Config = {
     FMP_BASE: 'https://financialmodelingprep.com/api/v3',
     FINNHUB_KEY: 'FINNHUB_KEY',
     ALPHA_VANTAGE_KEY: 'ALPHA_VANTAGE_KEY',
-    FMP_KEY: 'FMP_KEY'
+    FMP_KEY: 'FMP_KEY',
+    RAPIDAPI_KEY: 'RAPIDAPI_KEY'
   },
 
   POSTS: {
